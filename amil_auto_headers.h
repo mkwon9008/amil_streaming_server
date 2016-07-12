@@ -1,0 +1,51 @@
+
+#ifndef AMIL_AUTO_HEADERS_HEADER_INCLUDED
+#define AMIL_AUTO_HEADERS_HEADER_INCLUDED
+
+
+#ifndef AMIL_HAVE_UNISTD_H
+#define AMIL_HAVE_UNISTD_H 1
+#endif
+
+#ifndef AMIL_HAVE_INTTYPES_H
+#define AMIL_HAVE_INTTYPES_H 1
+#endif
+
+#ifndef AMIL_HAVE_LIMITS_H
+#define AMIL_HAVE_LIMITS_H 1
+#endif
+
+#ifndef AMIL_HAVE_SYS_PARAM_H
+#define AMIL_HAVE_SYS_PARAM_H 1
+#endif
+
+#ifndef AMIL_HAVE_SYS_MOUNT_H
+#define AMIL_HAVE_SYS_MOUNT_H 1
+#endif
+
+#ifndef AMIL_HAVE_SYS_STATVFS_H
+#define AMIL_HAVE_SYS_STATVFS_H 1
+#endif
+
+#ifndef AMIL_HAVE_SYS_FILIO_H
+#define AMIL_HAVE_SYS_FILIO_H 1
+#endif
+
+#ifndef AMIL_HAVE_CRYPT_H
+#define AMIL_HAVE_CRYPT_H 1
+#endif
+
+#ifndef AMIL_LINUX
+#define AMIL_LINUX 1
+#endif
+
+#ifndef AMIL_HAVESYS_PRCTL_H
+#define AMIL_HAVESYS_PRCTL_H 1
+#endif
+
+#ifndef AMIL_HAVE_SYS_VFS_H
+#define AMIL_HAVE_SYS_VFS_H 1
+#endif
+
+
+#endif
