@@ -1,5 +1,5 @@
 /*	amil_array.h
-*	This file is the file to create a function for the Array.
+*	This file is defination macro and Preprocessing of Array functions
 *	<RULE>
 *	1. Function is created as concise as possible.
 *	2. If you must write a custom function before amil + underbar.
@@ -15,10 +15,9 @@
 #include <amil_core.h>
 
 /*	defined amil_array_t
-	amil_uint_t = 
-	amil_pool_t = defined at amil_core.h
-*	void *elts = Generic pattern
-*	
+*	void *elts = Generic pattern	
+*	amil_uint_t = defined at amil_config.h
+*	amil_pool_t = defined at amil_core.h
 */
 typedef struct {
 	void        *elts;
@@ -28,18 +27,22 @@ typedef struct {
 	amil_pool_t  *pool;
  } amil_array_t;
  
- 
+//Preprocessing functions statement.
 amil_array_t *amil_array_create(amil_pool_t *p, amil_uint_t n, size_t size);
 void amil_array_destroy(amil_array_t *a);
 void *amil_array_push(amil_array_t *a);
 void *amil_array_push_n(amil_array_t *a, amil_uint_t n);
-  
+ 
+/*	amil_array_init is receiving data from standard array.h
+*	And set data to amil_array_t structure.
+*	amil_palloc = function defined by amil_palloc.c
+*	amil_palloc = function prototype declaration from amil_palloc.h 
+*	amil_array_t = type defined by amil_array.h
+*	amil_pool_t = type defined by amil_core.h
+*	amil_uint_t = type defined by amil_core.h
+*/
 static amil_inline amil_int_t amil_array_init(amil_array_t *array, amil_pool_t *pool, amil_uint_t n, size_t size)
 {
-     /*
-      * set "array->nelts" before "array->elts", otherwise MSVC thinks
-      * that "array->nelts" may be used without having been initialized
-      */
  
 	array->nelts = 0;
 	array->size = size;

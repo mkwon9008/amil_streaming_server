@@ -1,5 +1,14 @@
-/* Created by Kwon */
-/* Referenced by nginx/src/ngx_auto_config.h (ngx ver. 1.9.4)*/
+
+/*	amil_auto_configure.h
+*	This file is create check list of header file of standard library.
+*	And defination configure path and local file path. 
+*	<RULE>
+*	1. Function is created as concise as possible.
+*	2. If you must write a custom function before amil + underbar.
+*	3. Function names are separated by a custom type + content + relevant work.
+	   If needed, it may be written the use of the method object between custom type and content.
+*	4. The macro statement is written in capital letters.
+*/	
 
 
 #define AMIL_CONFIGURE "--prefix=/usr --conf-path=/etc/amil/amil.conf --pid-path=/var/run/amil.pid --lock-path=/var/lock/amil.lock --error-log-path=/var/log/amil/error.log --http-log-path=/var/log/amil/access.log --http-client-body-temp-path=/var/spool/amil/body --http-proxy-temp-path=/var/spool/amil/proxy --http-fastcgi-temp-path=/var/spool/amil/fastcgi --with-http_ssl_module --with-http_spdy_module --with-http_realip_module --with-http_addition_module --with-http_xslt_module --with-http_image_filter_module --with-http_geoip_module --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_auth_request_module --with-http_random_index_module --with-http_secure_link_module --with-http_degradation_module --with-http_stub_status_module --with-mail --with-mail_ssl_module --with-stream --with-stream_ssl_module --with-pcre --with-pcre-jit --with-http_perl_module --user=80 --group=80"

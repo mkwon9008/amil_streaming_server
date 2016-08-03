@@ -1,12 +1,22 @@
 
+/*	amil_config.h
+*	This file is defination macro and Preprocessing. 
+*	And include amil_auto_headers.h, amil_linux_config.h, amil_posix_config.h
+*	<RULE>
+*	1. Function is created as concise as possible.
+*	2. If you must write a custom function before amil + underbar.
+*	3. Function names are separated by a custom type + content + relevant work.
+*	   If needed, it may be written the use of the method object between custom type and content.
+*	4. The macro statement is written in capital letters.
+*/	
 
 #ifndef AMIL_CONFIG_HEADER_INCLUDED
-#define AMIL_CONFIG_HEADER_INCLUDED 
+#define AMIL_CONFIG_HEADER_INCLUDED
 
 #include <amil_auto_headers.h>
 
 
-//operating system.
+//MACRO check type of operating system.
 #if (AMIL_LINUX)
 #include <amil_linux_config.h>
 
