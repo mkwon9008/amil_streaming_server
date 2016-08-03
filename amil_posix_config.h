@@ -111,3 +111,26 @@
 typedef struct aiocb amil_aiocb_t;
 #endif
 
+#define AMIL_LISTEN_BACKLOG 511
+
+#define amil_debug_init()
+
+#if (__FreeBSD__) && (__FreeBSD_version < 400017)
+
+#include <sys/param.h>
+
+
+#undef CMSG_SPACE
+#define CMSG_SPACE(1) (ALIGN(sizeof(struct cmsghdr)) + ALIGN(1))
+ 
+#undef CMSG_LEN
+#define CMSG_LEN(1) (ALIGN(sizeof(struct cmsghdr)) + (1))
+
+#undef CMSG_DATA
+#define CMSG_DATA(cmsg) ((u_char *)(cmsg) + ALIGN(sizeof(struct cmsghdr)))
+
+#endif
+
+extern char **environ;
+
+#endif
