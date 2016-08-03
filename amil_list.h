@@ -48,3 +48,4 @@ static amil_inline amil_int_t amil_list_init(amil_lsit_t *list, amil_pool_t *poo
 void *amil_list_push(amil_list_t *list);
 
 #endif
+/*end script*/

@@ -6,6 +6,8 @@
 #include <amil_config.h> 
 
 typedef struct amil_conf_s			amil_conf_t;
+typedef struct amil_module_s 		amil_module_t;
+typedef struct amil_chain_s			amil_chain_t;
 typedef struct amil_cycle_s			amil_cycle_t;
 typedef struct amil_log_s			amil_log_t;
 typedef struct amil_pool_s			amil_pool_t;
@@ -13,6 +15,7 @@ typedef struct amil_open_file_s		amil_open_file_t;
 typedef struct amil_connection_s	amil_connection_t;
 typedef struct amli_file_s			amli_file_t;
 typedef struct amil_event_s			amil_event_t;
+typedef struct amil_event_aio_s 	amil_event_aio_t;
 typedef struct amil_command_s		amil_command_t;
 
 #if(AMIL_THREADS)
@@ -26,8 +29,12 @@ typedef void (*amil_connection_handler_pt)(amil_connection_t *c);
 
 #define AMIL_OK		 0
 #define AMIL_ERROR	-1
-#define AMIL_ABORT	-2
-#define AMIL_DONE	-3
+#define AMIL_AGAIN  -2
+#define AMIL_BUSY 	-3
+#define AMIL_DONE	-4
+#define AMIL_DECLINED -5
+#define AMIL_ABORT	-6
+
 
 //include start.
 
@@ -38,4 +45,16 @@ typedef void (*amil_connection_handler_pt)(amil_connection_t *c);
 #include <amil_list.h>
 #include <amil_palloc.h>
 
+
+void amil_cpuinfo(void);
+
+#if (AMIL_HAVE_OPENAT)
+#define AMIL_DISABLE_SYMLINKS_OFF 0
+#define AMIL_DISABLE_SYMLINKS_ON 1
+#define AMIL_DISABLE_SYMLINKS_NOTOWNER 2
+#endif
+
+#endif
+
+/*script end*/
 

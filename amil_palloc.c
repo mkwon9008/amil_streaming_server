@@ -28,10 +28,36 @@ void *amil_pnalloc(amil_pool_t *pool, size_t size)
 	return amil_palloc_large(pool, size);	
 }
 
+amil_pool_t * amil_create_pool(size_t size, aiml_log_t *log)
+{
+	amil_pool_t *p;
+
+	p = amil_memalign(AMIL_POOL_ALIGNMENT, size, log);
+	if(p == NULL)
+	{
+		return NULL;
+	}
+
+	p -> d.last =(u_char *)p + sizeof(amil_pool_t);
+	p -> d.end = (u_char *)p + size;
+	p -> d.next = NULL;
+	p -> d.failed = 0;
+
+	size = size - sizeof(amil_pool_t);
+	p -> max = (size < AMIL_MAX_ALLOC_FROM_POOL) ? size : AMIL_MAX_ALLOC_FROM_POOL;
+
+	p -> current = p;
+	p -> chain = NULL;
+	p -> large = NULL;
+	p -> cleanup = NULL;
+	p -> log = log;
+
+	return p;
+}
 
 
 /*amil_pnalloc is twice.*/
-void *amil_pnalloc(amil_pool_t *pool, size_t size)
+/*void *amil_pnalloc(amil_pool_t *pool, size_t size)
 {
 	u_char *m;
 	amil_pool_t *p;
@@ -59,7 +85,61 @@ void *amil_pnalloc(amil_pool_t *pool, size_t size)
 		return amil_palloc_large(pool, size);
 	}
 	return amil_palloc_large(pool, size);
+}*/
+
+
+void amil_destroy_pool(amil_pool_t *pool)
+{
+	amil_pool_t *p, *n;
+	amil_pool_large_t *l;
+	amil_pool_cleanup_t *c;
+
+	for(c = pool -> cleanup; c ; c = c -> next)
+	{
+		if(c -> handler)
+		{
+			amil_log_debug1(AMIL_LOG_DEBUG_ALLOC, pool -> log, 0, "run cleanup : %p", c);
+			c -> handler (c -> data);
+		}
+	}
+
+#if(AMIL_DEBUG)
+
+	for(l = pool -> large; l; l = l -> next)
+	{
+		amil_log_debug1(AMIL_LOG_DEBUG_ALLOC, pool -> log, 0, "free : %p", l -> alloc);
+	}
+
+	for(p = pool, n = pool -> d.next; /*void*/ ; p = n, n = n -> d.next)
+	{
+		amil_log_debug2(AMIL_LOG_DEBUG_ALLOC, pool -> log, 0, "free : %p, unused : %uz", p, p -> d.end - p -> d.last);
+		if(n == NULL)
+		{
+			break;
+		}
+	}
+
+#endif
+
+	for(l = pool -> large; l ; l = l -> next)	
+	{
+		if(l -> alloc)
+		{
+			amil_free(l -> alloc);
+		}
+	}
+
+	for(p = pool, n = pool -> d.next; /*void*/ ; p = n, n = n -> d.next)
+	{
+		amil_free(p);
+
+		if(n == NULL)
+		{
+			break;
+		}
+	}
 }
+
 
 amil_pool_cleanup_t * amil_pool_cleanup_add(amil_pool_t *p, size_t size)
 {

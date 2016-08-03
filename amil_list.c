@@ -54,3 +54,5 @@ void *amil_list_push(amil_list_t *l)
 
 	return elt;
 }
+
+/*script end*/

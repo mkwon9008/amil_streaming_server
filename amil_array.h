@@ -59,3 +59,4 @@ static amil_inline amil_int_t amil_array_init(amil_array_t *array, amil_pool_t *
  
  
 #endif
+/*script end*/

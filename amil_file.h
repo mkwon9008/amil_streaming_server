@@ -96,4 +96,6 @@ ssize_t amil_write_chain_to_file(amil_file_t *file, amil_chain_t *ce, off_t offs
 #define amil_read_fd_n	"read()"
 
 
-
+amil_int_t amil_get_full_name(amil_pool_t *pool, amil_str_t *prefix, amil_str_t *name)
+ssize_t amil_write_chain_to_temp_file(amil_temp_file_t *tf, amil_chain_t *chain)
+amil_int_t amil_create_temp_file(amil_file_t *file, amil_path_t *path, amil_pool_t *pool, amil_uint_t persistent, amil_uint_t clean, amil_uint_t access)

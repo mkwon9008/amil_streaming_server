@@ -25,6 +25,9 @@ typedef struct
 	u_char 		*name;
 }amil_pool_cleanup_file_t;
 
+void *amil_palloc(amil_pool_t *pool, size_t size);
+void *amil_pnalloc(amil_pool_t *pool, size_t size);
+
 
 
 /*end script.*/

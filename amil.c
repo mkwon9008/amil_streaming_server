@@ -1,4 +1,4 @@
-/*amil project created by Kwon*/
+
 
 #include <amil_config.h>
 #include <amil_core.h>
@@ -431,29 +431,332 @@ static amil_int_t amil_add_inherited_sockets(amil_cycle_t *cycle)
 
 
 
-char **
-amil_set_environment(amil_cycle_t *cycle, amil_unit_t *last)
+char **amil_set_environment(amil_cycle_t *cycle, amil_unit_t *last)
 {
+	char **p, **env;
+	amil_core_conf_t *ccf;
+	amil_str_t *var;
+	amil_uint_t i, n;
 
+	ccf = (amil_core_conf_t*) amil_get_conf(cycle -> conf_ctx, amil_core_module);
+
+	if(last == NULL && ccf -> environment)
+	{
+		return ccf -> environment;
+	}
+
+	var = ccf -> env.elts;
+
+	for(i=0 ; i < ccf -> env.nelts; i++)
+	{
+		if(aiml_strcmp(var[i].data, "TZ") == 0 || aiml_strcmp(var[i].data, "TZ=",3) == 0)
+		{
+			goto tz_found;
+		}
+	}
+
+	var = amil_array_push (&ccf -> env);
+	if(var == NULL)
+	{
+		return NULL;
+	}
+
+	var -> len = 2;
+	var -> data = (u_char*) "TZ";
+
+	var = ccf->env.elts;
+
+tz_found:
+
+	n = 0;
+
+	for(i=0 ; i < ccf -> env.nelts; i++)
+	{
+		if (var[i].data[var[i].len] == '=')
+		{
+			n++;
+			continue;
+		}
+
+		for(p = amil_os_environ; *p; p++)
+		{
+			if(amil_strncmp(*p, var[i].data, var[i].len) == 0 && (*p)[var[i].len] == '=')
+			{
+				n++;
+				break;
+			}
+		}
+	}//end for.	
+
+	if(last)
+	{
+		env = amil_alloc((*last + n + 1) * sizeof(char *), cycle -> log);
+		*last = n;
+	}
+	else
+	{
+		env = amil_palloc(cycle -> pool, (n + 1) * sizeof(char *));
+	}
+
+	if(env == NULL)
+	{
+		return NULL;
+	}
+
+	n = 0;
+
+	for(i=0; i < ccf -> env.nelts; i++)
+	{
+		if(var[i].data[var[i].len] == '=')
+		{
+			env[n++] = (char*) var[i].data;
+			continue;
+		}
+
+		for(p = amil_os_environ ; *p; p++)
+		{
+			if(amil_strncmp(*p, var[i].data, var[i].len) == 0 && (*p)[var[i].len] == '=')
+			{
+				env[n++] = *p;
+				break;
+			}
+		}
+	}
+
+
+	env[n] = NULL;
+
+	if(last == NULL)
+	{
+		ccf -> environment = env;
+		environ = env;
+	}
+		
+	return env;		
 }
 
 
-amil_pid_t
-amil_exec_new_binary(amil_cycle_t *cycle, char *const *argv)
+amil_pid_t amil_exec_new_binary(amil_cycle_t *cycle, char *const *argv)
 {
+	char **env, *var;
 
+	u_char *p;
+	amil_unit_t i, n;
+	amil_pid_t pid;
+	amil_exec_ctx_t ctx;
+	amil_core_conf_t *ccf;
+	amil_listening_t *ls;
+
+	amil_memzero(&ctx, sizeof(amil_exec_ctx_t));
+
+	ctx.path = argv[0];
+	ctx.name = "new Binary process";
+	ctx.argv = argv;
+
+	n = 2;
+	env = amil_set_environment(cycle, &n);
+	if(env == NULL)
+	{
+		return AMIL_INVALID_PID;
+	}
+
+	var = amil_alloc(sizeof(AMIL_VAR) + cycle -> listening.nelts * (AMIL_INT32_LEN + 1) + 2, cycle - log);
+	if(var == NULL)
+	{
+		amil_free(env);
+		return AMIL_INVALID_PID;
+	}
+
+	p = amil_cpymem(var, AMIL_VAR "=", sizeof(AMIL_VAR));
+
+	ls = cycle -> listening.elts;
+
+	for(i=0 ; i < cycle -> listening.nelts; i++)
+	{
+		p = amil_sprintf(p, "%ud;", ls[i].fd);
+	}
+
+	*p = '\0';
+
+	env[n++] = var;
+
+#if (AMIL_SETPROCTITLE_USES_ENV)	
+
+	env[n++] = 	"SPARE=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+				"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+				"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+				"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+				"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+#endif
+	env[n] = NULL;
+
+#if(AMIL_DEBUG)
+	{
+		char **e;
+		for(e = env; *e ; e++)
+		{
+			amil_log_debug1(AMIL_LOG_DEBUG_CORE, cycle -> log, 0, "env : %s", *e);
+		}
+	}				
+#endif
+
+	ctx.envp = (char *const *)	env;
+
+	ccf = (amil_core_conf_t *) amil_get_conf(cycle -> conf_ctx, amil_core_module);
+
+	if(amil_rename_file(ccf -> pid.data, ccf->oldpid.data) == AMIL_FILE_ERROR)
+	{
+		amil_log_error(AMIL_LOG_ALERT, cycle -> log, amil_errno, amil_rename_file_n "%s to %s failed" "before executing new binary process \" %s \"", ccf -> pid.data, ccf -> oldpid.data, argv[0]);
+		amil_free(env);
+		amil_free(var);
+
+		return AMIL_INVALID_PID;
+	}
+
+	pid = amil_execute(cycle, &ctx);
+
+	if(pid == AMIL_INVALID_PID)
+	{
+		if(amil_rename_file (ccf -> oldpid.data, ccf -> pid.data) == AMIL_FILE_ERROR)
+		{
+			amil_log_error(AMIL_LOG_ALERT, cycle -> log, amil_errno, amil_rename_file_n "%s back to %s failed after " "an attempt to execute new binary process \"%s\"", ccf -> oldpid.data, ccf -> pid.data, argv[0]);
+		}
+	}
+
+	amil_free(env);
+	amil_free(var);
+
+	return pid;
 }
 
-static amil_int_t
-amil_get_options(int argc, char *const *argv)
-{
 
+static amil_int_t amil_get_options(int argc, char *const *argv)
+{
+	u_char *p;
+	amil_int_t i;
+
+	for(i = 1; i < argc; i++)
+	{
+		p = (u_char *) argv[i];
+
+		if(*p++ != '-')
+		{
+			amil_log_stderr(0, "invalid option : \"%s\"", argv[i]);
+			return AMIL_ERROR;
+		}
+
+		while(*p)
+		{
+			switch (*p++)
+			{
+				case '?' :
+				case 'h' : 	amil_show_version = 1;
+							amil_show_help = 1;
+							break;
+
+				case 'v' :	amil_show_version = 1;
+							break;
+
+				case 't' : 	amil_test_config = 1;
+							break;			
+
+				case 'V' : 	amil_show_version = 1;
+							amil_show_configure = 1;
+							break;
+
+				case 'T' : 	amil_test_config = 1;
+							amil_dump_config = 1;
+							break;
+
+				case 'q' :	amil_quiet_mode = 1;
+							break;
+
+				case 'p' :	if(*p)
+							{
+								amil_prefix = p;
+								goto next;	
+							}
+
+							if(argv[++i])						
+							{
+								amil_prefix = (u_char *) argv[i];
+								goto next;
+							}
+
+							amil_log_stderr(0, "option \"-p\" requires directory name");
+							return AMIL_ERROR;
+
+				case 'c' : 	if(*p)
+							{
+								amil_conf_file = p;
+								goto next;
+							}
+
+							if(argv[++i])
+							{
+								amil_conf_file = (u_char) argv[i];
+								goto next;
+							}
+
+							amil_log_stderr(0, "option \"-c\" requires file name");
+							return AMIL_ERROR;
+
+				case 'g' : if(*p)
+							{
+								amil_conf_params = p;
+								goto next;	
+							}
+
+							if(argv[++i])
+							{
+								amil_conf_params = (u_char *) argv[i];
+								goto next;
+							}			
+
+							amil_log_stderr(0, "option \"-g\" requires parameter");
+							return AMIL_ERROR;
+
+				case 's' : if(*p)
+							{
+								amil_signal = (char *) p;
+							}
+							else if (argv[++i])
+							{
+								amil_signal = argv[i];
+							}
+							else if 
+							{
+								amil_log_stderr(0, "option \"-s\" requires parameter");
+								return AMIL_ERROR;
+							}
+
+							if(amil_strcmp(amil_signal, "stop") == 0 || amil_strcmp(amil_signal, "quit") == 0 || amil_strcmp(amil_signal, "reopen") == 0 || amil_strcmp(amil_signal, "reload") == 0)
+							{
+								amil_process = AMIL_PROCESS_SIGNALLER;
+								goto next;
+							}
+
+							amil_log_stderr(0, "invalid option : \"-s %s\"", amil_signal);
+							return AMIL_ERROR;
+
+				default :	amil_log_stderr(0, "invalid option : \"%c\"", *(p - 1));
+							return AMIL_ERROR;			
+
+			}//end switch
+		}//end while
+
+		next: continue;
+	}
+
+	return AMIL_OK;
 }
 
 static amil_int_t
 amil_save_argv(amil_cycle_t *cycle, int argc, char *const *argv)
 {
+#if(AMIL_FREEBSD)
 
+#else
 }
 
 static amil_int_t
