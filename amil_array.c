@@ -15,7 +15,7 @@
 /*	amil_array_create function. This function is used to create an array.
 *	amil_pool_t = type defined by amil_core.h
 *	amil_uint_t = type defined by amil_config.h
-*	size_t = The size_t is size of creation array.
+*	size_t = defined by <sys/types.h>
 *	return varriable type is pointer of amil_array_t.
 */
 amil_array_t * amil_array_create(amil_pool_t *p, amil_uint_t n, size_t size)

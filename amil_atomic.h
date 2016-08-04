@@ -1,5 +1,5 @@
 /*	amil_atomic.h
-*	This file is defination macro and Preprocessing of atomic functions.
+*	This file is definition macro and Preprocessing of atomic functions.
 *	<RULE>
 *	1. Function is created as concise as possible.
 *	2. If you must write a custom function before amil + underbar.

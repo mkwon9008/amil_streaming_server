@@ -1,15 +1,40 @@
 
-
+/*	amil_file.c
+*	This file is relation with file I/O functionality.
+*	<RULE>
+*	1. Function is created as concise as possible.
+*	2. If you must write a custom function before amil + underbar.
+*	3. Function names are separated by a custom type + content + relevant work.
+	   If needed, it may be written the use of the method object between custom type and content.
+*	4. The macro statement is written in capital letters.
+*/	
 
 #include <amil_config.h>
 #include <amil_core.h>
 
-static amil_int_t amil_test_full_name(amil_str_t *name);
 
+/*	static preprocessing.
+*	amil_int_t = 
+*	amil_atomic_t = defined by amil_atomic.h
+*	amil_atomic_int_t = defined by amil_atomic.h
+*/
+static amil_int_t amil_test_full_name(amil_str_t *name);
 static amil_atomic_t temp_number = 0;
 amil_atomic_t *amil_temp_number = &temp_number;
 amil_atomic_int_t amil_random_number = 123456;
 
+
+/*	amil_get_full_name function is get and check full name from data.
+*	amil_pool_t = type defined by amil_core.h
+*	amil_str_t = type defined by amil_string.h
+*	amil_test_full_name = function defined by amil_file.c
+*	amil_test_full_name = function prototype defined amil_file.h
+*	amil_pnalloc = function defined amil_palloc.c
+*	amil_pnalloc = function prototype declaration amil_palloc.h
+*	amil_cpymem = defined amil_string.h
+*	amil_cpystrn = function defined amil_string.c
+* 	return varriable type is amil_int_t. And amil_signal (AMIL_OK)
+*/
 amil_int_t amil_get_full_name(amil_pool_t *pool, amil_str_t *prefix, amil_str_t *name)
 {
 	size_t len;
@@ -18,6 +43,7 @@ amil_int_t amil_get_full_name(amil_pool_t *pool, amil_str_t *prefix, amil_str_t 
 
 	rc = amil_test_full_name(name);
 
+	//check exception.
 	if(rc == AMIL_OK)
 	{
 		return rc;
@@ -25,6 +51,7 @@ amil_int_t amil_get_full_name(amil_pool_t *pool, amil_str_t *prefix, amil_str_t 
 
 	len = prefix -> len;
 
+//Operating System type.
 #if (AMIL_WIN32)
 
 	if(rc == 2)
@@ -35,7 +62,8 @@ amil_int_t amil_get_full_name(amil_pool_t *pool, amil_str_t *prefix, amil_str_t 
 #endif
 
 	n = amil_pnalloc(pool, len + name -> len + 1);
-
+	
+	//check exception.
 	if(n == NULL) 
 	{
 		return AMIL_ERROR;
@@ -51,13 +79,19 @@ amil_int_t amil_get_full_name(amil_pool_t *pool, amil_str_t *prefix, amil_str_t 
 
 }
 
+
+/*	amil_test_full_name is for test with full name from data.
+*	amil_int_t = defined by 
+*/
 static amil_int_t amil_test_full_name(amil_str_t *name)
 {
+//Operating System type.
 #if (AMIL_WIN32)	
 	u_char c0, c1;
 
 	c0 = name -> data[0];
 
+	//if(len < 2 ) then return AMIL_DECLINED.
 	if(name -> len < 2)
 	{
 		if(c0 == '/')
@@ -69,6 +103,7 @@ static amil_int_t amil_test_full_name(amil_str_t *name)
 
 	c1 = name -> data[1];
 	
+
 	if(c1 == ':')
 	{
 		c0 |= 0x20;
@@ -105,6 +140,19 @@ static amil_int_t amil_test_full_name(amil_str_t *name)
 #endif	
 }
 
+/*	amil_write_chain_to_temp_file is write chain to temp files.
+*	ssize_t = (signed int) defined by <sys/types.h>
+*	amil_temp_file_t = defined by amil_file.h
+*	amil_chain_t = defined by amil_core.h
+*	amil_log_error = function defined by amil_log.c
+*	amil_log_error = 
+* 	amil_create_temp_file = function defined by amil_file.c
+*	amil_create_temp_file = function prototype declaration from amil_file.h
+*	amil_write_chain_to_file = function defined by amil_file.c
+*	amil_write_chain_to_file = function prototype declaration from amil_file.h
+*	amil_thread_write_chain_to_file = 
+*	amil_thread_write_chain_to_file = 
+*/
 ssize_t amil_write_chain_to_temp_file(amil_temp_file_t *tf, amil_chain_t *chain)
 {
 	amil_int_t rc;
@@ -135,7 +183,10 @@ ssize_t amil_write_chain_to_temp_file(amil_temp_file_t *tf, amil_chain_t *chain)
 
 }
 
-
+/*	amil_create_temp_file is 
+*
+*
+*/
 amil_int_t amil_create_temp_file(amil_file_t *file, amil_path_t *path, amil_pool_t *pool, amil_uint_t persistent, amil_uint_t clean, amil_uint_t access)
 {
 	uint32_t n;
@@ -210,3 +261,9 @@ amil_int_t amil_create_temp_file(amil_file_t *file, amil_path_t *path, amil_pool
 		}
 	}
 }
+
+
+
+
+amil_thread_write_chain_to_file(&tf -> file, chain, tf -> offset, tf -> pool);
+amil_write_chain_to_file(&tf -> file, chain, &tf -> offset, tf -> pool);

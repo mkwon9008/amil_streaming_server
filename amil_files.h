@@ -1,8 +1,8 @@
 
-
+/*
 #ifndef AMIL_FILES_HEADER_INCLUDE
 #define AMIL_FILES_HEADER_INCLUDE
 
 #define AMIL_LINEFEED_SIZE	1
 #define AMIL_LINEFEED 		"\x0a"
-
+*/ 

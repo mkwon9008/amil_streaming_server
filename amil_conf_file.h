@@ -1,7 +1,7 @@
 
 
 /*	amil_conf_file.h
-*	This file is defination macro and Preprocessing of config file functions.
+*	This file is definition macro and Preprocessing of config file functions.
 *	<RULE>
 *	1. Function is created as concise as possible.
 *	2. If you must write a custom function before amil + underbar.

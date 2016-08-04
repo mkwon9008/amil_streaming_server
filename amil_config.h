@@ -1,6 +1,6 @@
 
 /*	amil_config.h
-*	This file is defination macro and Preprocessing. 
+*	This file is definition macro and Preprocessing. 
 *	And include amil_auto_headers.h, amil_linux_config.h, amil_posix_config.h
 *	<RULE>
 *	1. Function is created as concise as possible.
@@ -35,6 +35,8 @@
 
 #endif
 
+
+//Defined Max value via Operation bit type.
 #if(AMIL_PTR_SIZE == 4)
 #define AMIL_INT_T_LEN AMIL_INT32_LEN
 #define AMIL_MAX_INT_T_VALUE 2147483647

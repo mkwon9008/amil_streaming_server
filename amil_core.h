@@ -1,4 +1,14 @@
-/*created by mkwon*/
+
+/*	amil_core.h
+*	This file is definition macro and Preprocessing. 
+*	And include amil_headers files.
+*	<RULE>
+*	1. Function is created as concise as possible.
+*	2. If you must write a custom function before amil + underbar.
+*	3. Function names are separated by a custom type + content + relevant work.
+*	   If needed, it may be written the use of the method object between custom type and content.
+*	4. The macro statement is written in capital letters.
+*/	
 
 #ifndef AMIL_CORE_HEATHER_INCLUDED
 #define AMIL_CORE_HEATHER_INCLUDED
@@ -36,8 +46,13 @@ typedef void (*amil_connection_handler_pt)(amil_connection_t *c);
 #define AMIL_ABORT	-6
 
 
-//include start.
+//amil_headers include start.
 
+#include <amil_alloc.h>
+#include <amil_array.h>
+#include <amil_atomic.h>
+#include <amil_file.h>
+#include <amil_syslog.h>
 #include <amil_conf_file.h>
 #include <amil_thread.h>
 #include <amil_string.h>
