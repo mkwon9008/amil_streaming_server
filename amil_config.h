@@ -49,10 +49,15 @@
 
 
 typedef intptr_t 	amil_intptr_t;
-typedef	uintptr_t 	amil_uint_t;
+typedef intptr_t 	amil_int_t;
 typedef intptr_t 	amil_flag_t;
 
 typedef uintptr_t 	amil_uint_t;
 
 #define amil_align(d, a) (((d) + (a-1)) & ~(a-1)) 
 #define amil_align_ptr(p, a)	(u_char *) (((uintptr_t ) (p) + ((uintptr_t) a - 1)) & ~((uintptr_t) a - 1))
+
+#define amil_inline
+#define amil_inline inline
+
+

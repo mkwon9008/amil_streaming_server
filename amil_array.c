@@ -53,7 +53,7 @@ amil_array_t * amil_array_create(amil_pool_t *p, amil_uint_t n, size_t size)
 void *amil_array_push(amil_array_t *a)
 {
 	/* 	declearation void type varriable *elt, *new
-	*	size_t is meaning the size of data (amil_array_t *a)
+	*	size_t = defined by <sys/types.h>
 	* 	amil_pool_t is declearation at amil_core.h
 	*/
 	void *elt, *new;

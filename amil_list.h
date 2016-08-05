@@ -17,14 +17,23 @@
 
 typedef struct amil_list_part_s 	amil_list_part_t;
 
+/*	struct amil_list_part_s
+*	amil_uint_t = type defined by amil_config.h
+*	amil_list_part_s = defined by amil_list.h
+*/	
 struct amil_list_part_s
 {
-	void 				*elts;
+	void 				*elts; //Generic pattern.
 	amil_uint_t 		nelts;
 	amil_list_part_t 	*next;
 };
 
-
+/*	struct amil_list_t
+*	amil_list_part_t = defined by amil_list.h
+*	size_t = defined by <sys/types.h>
+*	amil_uint_t = type defined by amil_config.h
+*	amil_pool_t = type defined by amil_core.h
+*/
 typedef struct 
 {
 	amil_list_part_t 	*last;
@@ -34,11 +43,22 @@ typedef struct
 	amil_pool_t 		*pool;
 } amil_list_t;
 
+//Preprocessing.
 amil_list_t *amil_list_create(amil_pool_t *pool, amil_uint_t n, size_t size);
 
+void *amil_list_push(amil_list_t *list);
+
+/*	amil_list_init function are create list functinality.
+*	amil_inline = defined by amil_config.h
+*	amil_int_t = defined by amil_config.h
+*	amil_pool_t = type defined by amil_core.h
+*/
 static amil_inline amil_int_t amil_list_init(amil_lsit_t *list, amil_pool_t *pool, amil_uint n, size_t size)
 {
+	//Memory allocate in list -> part.elts
 	list -> part.elts = amil_palloc (pool, n * size);
+
+	//check exeception.
 	if(list -> part.elts == NULL ) 
 	{
 		return AMIL_ERROR;
@@ -54,7 +74,7 @@ static amil_inline amil_int_t amil_list_init(amil_lsit_t *list, amil_pool_t *poo
 	return AMIL_OK;
 }
 
-void *amil_list_push(amil_list_t *list);
+
 
 #endif
 /*end script*/

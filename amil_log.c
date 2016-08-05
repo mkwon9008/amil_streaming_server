@@ -1,14 +1,25 @@
 
+/*	amil_log.c
+*	This file is written a function to process the error.
+*	<RULE>
+*	1. Function is created as concise as possible.
+*	2. If you must write a custom function before amil + underbar.
+*	3. Function names are separated by a custom type + content + relevant work.
+	   If needed, it may be written the use of the method object between custom type and content.
+*	4. The macro statement is written in capital letters.
+*/	
 
 #include <amil_config.h>
 #include <amil_core.h>
 
+//Static function preprocessing.
 static char *amil_error_log(amil_conf_t *cf, amil_command_t *cmd, void *conf);
 static char *amil_log_set_levels(amil_conf_t *cf, amil_log_t *log);
 static void amil_log_insert(amil_log_t *log, amil_log_t *new_log);
 
+//if amil is debug mode.
 #if (AMIL_DEBUG)
-
+//Static function preprocessing.
 static void amil_log_memory_writer(amil_log_t *log, amil_uint_t level, u_char *buf, size_t len);
 static void amil_log_memory_cleanup(void *data);
 
@@ -21,9 +32,17 @@ void amil_log_error_core(amil_uint_t level, amil_log_t *log, amil_err_t err, con
 
 #else
 void amil_log_error_core(amil_uint_t level, amil_log_t *log, amil_err_t err, const char *fmt, va_list args)
+//end debug mode.
 #endif
 
+
 #if !(AMIL_HAVE_VARIADIC_MACROS)
+/*	amil_log_error function is checking log level. and trasport that data to amil_log_error_core.
+*	amil_cdecl = defined by amil_config.h
+*	amil_uint_t = defined by amil_config.h
+*	amil_log_t = defined by amil_log.h
+*	amil_err_t = defined by amil_log.h
+*/
 void amil_cdecl amil_log_error(amil_uint_t level, amil_log_t *log, amil_err_t err, const char *fmt, ...)
 {
 	va_list args;
@@ -35,6 +54,11 @@ void amil_cdecl amil_log_error(amil_uint_t level, amil_log_t *log, amil_err_t er
 	}
 }
 
+/* 	amil_log_debug_core function is transport error data to amil_log_error_core
+*	amil_cdecl = defined by amil_config.h
+*	amil_log_t = defined by amil_log.h
+*	amil_err_t = defined by amil_log.h
+*/
 void amil_cdecl amil_log_debug_core(amil_log_t *log, amil_err_t err, const char *fmt, ...)
 {
 	va_list args;
@@ -43,8 +67,12 @@ void amil_cdecl amil_log_debug_core(amil_log_t *log, amil_err_t err, const char 
 	amil_log_error_core(AMIL_LOG_DEBUG, log, err,fmt, args);
 	va_end(args);
 }
+//Macro end !(AMIL_HAVE_VARIADIC_MACROS)
 #endif
 
+/*	amil_log_abort function is get from amil_vsnprintf. and return data to amil_log_error function.
+*
+*/
 void amil_cdecl amil_log_abort (amil_err_t err, const char *fmt, ...)
 {
 	u_char *p;
