@@ -85,7 +85,11 @@ void amil_cdecl amil_log_abort (amil_err_t err, const char *fmt, ...)
 	amil_log_error(AMIL_LOG_ALERT, amil_cycle -> log, err, "%*s", p - errstr, errstr);
 }
 
-
+/* amil_log_set_log function is create log syntaxs on log.txt
+*	amil_log_t = defined by amil_log.h
+*	amil_str_t
+*
+*/
 char *amil_log_set_log(amil_conf_t *cf, amil_log_t **head)
 {
 	amil_log_t 			*new_log;

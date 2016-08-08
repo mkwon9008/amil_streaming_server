@@ -183,20 +183,30 @@ ssize_t amil_write_chain_to_temp_file(amil_temp_file_t *tf, amil_chain_t *chain)
 
 }
 
-/*	amil_create_temp_file is 
-*
-*
+/*	amil_create_temp_file is create a temp file functionality
+*	amil_int_t = defined by amil_config.h
+* 	amil_file_t = defined by amil_file.h
+*	amil_path_t = defined by amil_file.h
+*	amil_pool_t = defined by amil_core.h
+*	amil_uint_t = defined by amil_config.h
 */
 amil_int_t amil_create_temp_file(amil_file_t *file, amil_path_t *path, amil_pool_t *pool, amil_uint_t persistent, amil_uint_t clean, amil_uint_t access)
 {
+/*
+*	uint32_t = defined by <sys/types.h>
+*	amil_err_t = 
+*	amil_pool_cleanup_t = defined amil_palloc.h
+*	amil_pool_cleanup_file_t = defined amil_palloc.h
+*/
 	uint32_t n;
 	amil_err_t err;
 	amil_pool_cleanup_t *cln;
 	amil_pool_cleanup_file_t *clnf;
 
 	file -> name.len = path -> name.len + 1 + path -> len + 10;
-
+	
 	file -> name.data = amil_pnalloc(pool, file -> name.len + 1);
+	//check exception.
 	if(file -> name.data == NULL)
 	{
 		return AMIL_ERROR;
@@ -263,7 +273,11 @@ amil_int_t amil_create_temp_file(amil_file_t *file, amil_path_t *path, amil_pool
 }
 
 
+ssize_t amil_thread_write_chain_to_file(amil_file_t *file, amil_chain_t *cl, off_t offset, amil_pool_t *pool)
+{
 
+}
+amil_write_chain_to_file(amil_file_t *file, amil_chain_t *cl, off_t offset, amil_pool_t *pool)
+{
 
-amil_thread_write_chain_to_file(&tf -> file, chain, tf -> offset, tf -> pool);
-amil_write_chain_to_file(&tf -> file, chain, &tf -> offset, tf -> pool);
+}
