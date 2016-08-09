@@ -28,6 +28,7 @@ typedef struct
 void *amil_palloc(amil_pool_t *pool, size_t size);
 void *amil_pnalloc(amil_pool_t *pool, size_t size);
 
+typedef struct amil_pool_cleanup_s amil_pool_cleanup_t;
 
 
 /*end script.*/

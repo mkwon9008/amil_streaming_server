@@ -751,16 +751,45 @@ static amil_int_t amil_get_options(int argc, char *const *argv)
 	return AMIL_OK;
 }
 
-static amil_int_t
-amil_save_argv(amil_cycle_t *cycle, int argc, char *const *argv)
+static amil_int_t amil_save_argv(amil_cycle_t *cycle, int argc, char *const *argv)
 {
 #if(AMIL_FREEBSD)
+	amil_os_argv = (char **) argv;
+	amil_argc = argc;
+	amil_argv = (char **) argv;
 
 #else
+
+	size_t len;
+	amil_int_t i;
+
+	amil_os_argv = (char **) argv;
+	amil_argc = argc;
+
+	amil_argv = amil_alloc((argc + 1) * sizeof(char *), cycle -> log);
+	if(amil_argv == NULL)
+	{
+		return AMIL_ERROR;
+	}
+
+	for(i = 0; i < argc ; i++)
+	{
+		len = amil_strlen(argv[i]) + 1;
+		amil_argv[i] = amil_alloc(len, cycle -> log);
+		if(amil_argv[i] == NULL)
+		{
+			return AMIL_ERROR;
+		}
+
+		(void) amil_cypstrn((u_char *) amil_argv[i], (u_char *) argv[i], len);
+	}
+
+	amil_os_environ = environ;
+
+	return AMIL_OK;
 }
 
-static amil_int_t
-amil_process_option(amil_cycle_t *cycle)
+static amil_int_t amil_process_option(amil_cycle_t *cycle)
 {
 
 }

@@ -35,7 +35,7 @@ typedef volatile amil_atomic_uint_t amil_atomic_t;
 #define AMIL_ATOMIC_T_LEN	(sizeof("-2147483648") - 1)
 #endif 
 
-/*	amil_atomic_fetch_add function is tells us about 
+/*	amil_atomic_fetch_add function is tell old or new.
 *	the patch histories of the atomic number of the function.
 *	amil_atomic_t = defined by amil_atomic.h
 *	amil_atomic_uint_t = defined by amil_atomic.h 

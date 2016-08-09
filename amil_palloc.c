@@ -1,5 +1,16 @@
 
 
+/*	amil_palloc.c
+*	This file are definition memory allocation functionality.
+*	<RULE>
+*	1. Function is created as concise as possible.
+*	2. If you must write a custom function before amil + underbar.
+*	3. Function names are separated by a custom type + content + relevant work.
+	   If needed, it may be written the use of the method object between custom type and content.
+*	4. The macro statement is written in capital letters.
+*/	
+
+
 #include <amil_config.h>
 #include <amil_core.h>
 
