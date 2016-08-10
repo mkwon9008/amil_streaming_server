@@ -42,6 +42,9 @@ typedef struct
 
 #define amil_member(buf, c, n) (void) memset(buf, c, n)
 
+#define amil_memzero(buf, n) (void) memset(buf, 0, n)
+#define amil_memset(buf, c, n) (void) memset(buf, c, n)
+
 #if (AMIL_MEMCPY_LIMIT)
 void *amil_memcpy(void *dst, const void *src, size_t n);
 #define amil_cpymem(dst, src, n) (((u_char *) amil_memcpy(dst, src, n))+(n))
