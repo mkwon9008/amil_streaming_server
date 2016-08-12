@@ -43,7 +43,7 @@ struct amil_pool_s
 	amil_log_t 				*log;
 };
 
-
+/* struct amil_pool_cleanup_file_t */
 typedef struct
 {
 	amil_fd_t 	fd;
@@ -51,6 +51,7 @@ typedef struct
 	u_char 		*name;
 }amil_pool_cleanup_file_t;
 
+/* function preprocessing start. */
 void *amil_palloc(amil_pool_t *pool, size_t size);
 void *amil_pnalloc(amil_pool_t *pool, size_t size);
 

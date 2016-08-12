@@ -19,3 +19,9 @@
 #define AMIL_MAX_CONF_ERRSTR 1024
 
 typedef uintptr_t       ngx_uint_t;
+
+typedef struct 
+{
+	amil_str_t name;
+	amil_uint_t value;
+} amil_conf_enum_t;

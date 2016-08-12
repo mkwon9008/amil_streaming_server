@@ -1,9 +1,20 @@
 
 
+/*	amil.c
+*	This file is has main function in this project.
+*	<RULE>
+*	1. Function is created as concise as possible.
+*	2. If you must write a custom function before amil + underbar.
+*	3. Function names are separated by a custom type + content + relevant work.
+	   If needed, it may be written the use of the method object between custom type and content.
+*	4. The macro statement is written in capital letters.
+*/	
+
 #include <amil_config.h>
 #include <amil_core.h>
 #include <amil.h>
 
+/* functionality preprocessing start. */
 static amil_int_t amil_add_inherited_sockets(amil_cycle_t *cycle);
 static amil_int_t amil_get_options(int argc, char *const *argv);
 static amil_int_t amil_process_option(amil_cycle_t *cycle);
@@ -17,47 +28,59 @@ static char *amil_set_priority(amil_conf_t *cf, amil_command_t *cmd, void *conf)
 static char *amil_set_cpu_affinity(amil_conf_t *cf, amil_command_t *cmd, void *conf);
 static char *amil_set_worker_processes(amil_conf_t *cf, amil_command_t *cmd, void *conf;)
 
+/* amil_conf_enum_t = defined by amil_conf_file.h */
 static amil_conf_enum_t amil_debug_points[] = {
 	{ amil_string("stop"), AMIL_DEBUG_POINTS_STOP },
 	{ amil_string("abort"), AMIL_DEBUG_POINTS_ABORT },
 	{ amil_null_string, 0}
 };
 
+/* amil_command_t = defined by amil_core.h */
 static amil_command_t amil_core_commands[] = {
-	{ amil_string("daemon"),
-	  AMIL_MAIN_CONF|AMIL_DIRECT_CONF|AMIL_CONF_FLAG,
-	  amil_conf_set_flag_slot,
-	  0,
-	  offsetof(amil_core_conf_t, daemon),
-	  NULL },
+	{
+		amil_string("daemon"),
+		AMIL_MAIN_CONF|AMIL_DIRECT_CONF|AMIL_CONF_FLAG,
+		amil_conf_set_flag_slot,
+		0,
+		offsetof(amil_core_conf_t, daemon),
+		NULL 
+	},
 
-	{ amil_string("master_process"),
-	  AMIL_MAIN_CONF|AMIL_DIRECT_CONF|AMIL_CONF_FLAG,
-	  amil_conf_set_flag_slot,
-	  0,
-	  offsetof(amil_core_conf_t, master),
-	  NULL },
+	{ 
+		amil_string("master_process"),
+	  	AMIL_MAIN_CONF|AMIL_DIRECT_CONF|AMIL_CONF_FLAG,
+	  	amil_conf_set_flag_slot,
+	  	0,
+	  	offsetof(amil_core_conf_t, master),
+	  	NULL
+	},
 
-	{ amil_string("timer_resolution"),
-	  AMIL_MAIN_CONF|AMIL_DIRECT_CONF|AMIL_CONF_TAKE1,
-	  amil_conf_set_msec_slot,
-	  0,
-	  offsetof(amil_core_conf_t, timer_resolution),
-	  NULL },
+	{ 
+		amil_string("timer_resolution"),
+	  	AMIL_MAIN_CONF|AMIL_DIRECT_CONF|AMIL_CONF_TAKE1,
+	  	amil_conf_set_msec_slot,
+	  	0,
+	  	offsetof(amil_core_conf_t, timer_resolution),
+	  	NULL
+	},
 
-	{ amil_string("pid")
-	  AMIL_MAIN_CONF|AMIL_DIRECT_CONF|AMIL_CONF_TAKE1,
-	  amil_conf_set_str_slot,
-	  0,
-	  offsetof(amil_core_conf_t, pid),
-	  NULL },
+	{
+		amil_string("pid")
+		AMIL_MAIN_CONF|AMIL_DIRECT_CONF|AMIL_CONF_TAKE1,
+	  	amil_conf_set_str_slot,
+	  	0,
+	  	offsetof(amil_core_conf_t, pid),
+	  	NULL
+	},
 
-	{ amil_string("lock_file"),
-	AMIL_MAIN_CONF|AMIL_DIRECT_CONF|AMIL_CONF_TAKE1,
-	amil_conf_set_str_slot,
-	0,
-	offsetof(amil_core_conf_t, lock_file),
-	NULL },
+	{ 
+		amil_string("lock_file"),
+		AMIL_MAIN_CONF|AMIL_DIRECT_CONF|AMIL_CONF_TAKE1,
+		amil_conf_set_str_slot,
+		0,
+		offsetof(amil_core_conf_t, lock_file),
+		NULL
+	},
 
 	{
 		amil_string("worker_processes"),
