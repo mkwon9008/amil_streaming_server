@@ -1,15 +1,22 @@
-/*created by mkwon
-* 	
-*/
 
+/*	amil_thread.h
+*	This file is defined macros and structs for system thread. 
+*	<RULE>
+*	1. Function is created as concise as possible.
+*	2. If you must write a custom function before amil + underbar.
+*	3. Function names are separated by a custom type + content + relevant work.
+	   If needed, it may be written the use of the method object between custom type and content.
+*	4. The macro statement is written in capital letters.
+*/	
 #ifndef AMIL_THREAD_HEATHER_INCLUDED
 #define AMIL_THREAD_HEATHER_INCLUDED
 
-#include <pthread.h> //std
+#include <pthread.h> /* standard headerfile. */
 #include <amil_config.h>
 #include <amil_core.h>
 
 
+/* functionality preprocessing start. */
 typedef pthread_mutex_t amil_thread_mutex_t;
 amil_int_t amil_thread_mutex_create(amil_thread_mutex_t *mtx, amil_log_t *log);
 amil_int_t amil_thread_mutex_destroy(amil_thread_mutex_t *mtx, amil_log_t *log);

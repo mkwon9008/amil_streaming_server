@@ -1,4 +1,13 @@
 
+/*	amil_posix_config.h
+*	This file is create check list of header file of standard library fit posix environment.
+*	<RULE>
+*	1. Function is created as concise as possible.
+*	2. If you must write a custom function before amil + underbar.
+*	3. Function names are separated by a custom type + content + relevant work.
+	   If needed, it may be written the use of the method object between custom type and content.
+*	4. The macro statement is written in capital letters.
+*/	
 
 #ifndef AMIL_POSIX_CONFIG_HEADER_INCLUDED
 #define AMIL_POSIX_CONFIG_HEADER_INCLUDED
@@ -111,3 +120,26 @@
 typedef struct aiocb amil_aiocb_t;
 #endif
 
+#define AMIL_LISTEN_BACKLOG 511
+
+#define amil_debug_init()
+
+#if (__FreeBSD__) && (__FreeBSD_version < 400017)
+
+#include <sys/param.h>
+
+
+#undef CMSG_SPACE
+#define CMSG_SPACE(1) (ALIGN(sizeof(struct cmsghdr)) + ALIGN(1))
+ 
+#undef CMSG_LEN
+#define CMSG_LEN(1) (ALIGN(sizeof(struct cmsghdr)) + (1))
+
+#undef CMSG_DATA
+#define CMSG_DATA(cmsg) ((u_char *)(cmsg) + ALIGN(sizeof(struct cmsghdr)))
+
+#endif
+
+extern char **environ;
+
+#endif
